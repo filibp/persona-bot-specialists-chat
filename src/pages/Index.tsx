@@ -33,11 +33,11 @@ const Index = () => {
           selectedSpecialist={selectedSpecialist}
         />
         
-        <main className="flex-1 flex flex-col">
-          <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <SidebarTrigger className="md:hidden" />
+                <SidebarTrigger />
                 <img 
                   src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
                   alt="PersonaBot" 
@@ -48,7 +48,7 @@ const Index = () => {
             </div>
           </header>
 
-          <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 flex flex-col min-h-0">
             {!selectedSpecialist ? (
               <SpecialistSelector 
                 onSpecialistSelect={handleSpecialistSelect}
@@ -63,7 +63,7 @@ const Index = () => {
               />
             )}
           </div>
-        </main>
+        </div>
       </div>
     </SidebarProvider>
   );

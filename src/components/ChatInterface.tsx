@@ -123,7 +123,7 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
       </div>
 
       {/* Messages with inner scroll */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 min-h-0 flex flex-col">
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4 max-w-4xl mx-auto">
             {messages.map((message) => (
@@ -167,7 +167,7 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
         </ScrollArea>
       </div>
 
-      {/* Message Input */}
+      {/* Message Input - Always visible at bottom */}
       <div className="bg-white border-t border-gray-200 p-4 flex-shrink-0">
         <div className="max-w-4xl mx-auto">
           <div className="flex space-x-2">
