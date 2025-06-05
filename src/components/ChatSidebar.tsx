@@ -27,11 +27,41 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
   };
 
   const specialists = [
-    { id: 'pcp', name: 'PCP Patricia', count: 3 },
-    { id: 'cardio', name: 'Cardio Carlos', count: 1 },
-    { id: 'endo', name: 'Endo Emma', count: 2 },
-    { id: 'nephro', name: 'Nephro Nathan', count: 0 },
-    { id: 'pharm', name: 'Pharm Philip', count: 1 }
+    { 
+      id: 'pcp', 
+      name: 'PCP Patricia', 
+      count: 3,
+      avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=faces',
+      color: 'bg-medical-blue'
+    },
+    { 
+      id: 'cardio', 
+      name: 'Cardio Carlos', 
+      count: 1,
+      avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=faces',
+      color: 'bg-medical-red'
+    },
+    { 
+      id: 'endo', 
+      name: 'Endo Emma', 
+      count: 2,
+      avatar: 'https://images.unsplash.com/photo-1594824405077-c7db9639b50d?w=150&h=150&fit=crop&crop=faces',
+      color: 'bg-medical-green'
+    },
+    { 
+      id: 'nephro', 
+      name: 'Nephro Nathan', 
+      count: 0,
+      avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=faces',
+      color: 'bg-medical-teal'
+    },
+    { 
+      id: 'pharm', 
+      name: 'Pharm Philip', 
+      count: 1,
+      avatar: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=150&h=150&fit=crop&crop=faces',
+      color: 'bg-medical-amber'
+    }
   ];
 
   const sampleChats = [
@@ -110,7 +140,13 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
                 ) : (
                   <ChevronRight className="w-4 h-4 mr-2 text-gray-500" />
                 )}
-                <div className="w-6 h-6 bg-primary-100 rounded-full mr-2 flex-shrink-0"></div>
+                <div className={`w-6 h-6 ${specialist.color} rounded-full p-0.5 mr-2 flex-shrink-0`}>
+                  <img 
+                    src={specialist.avatar} 
+                    alt={specialist.name}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
                 <span className="font-medium text-gray-900 truncate">
                   {specialist.name}
                 </span>

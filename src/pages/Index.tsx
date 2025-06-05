@@ -8,10 +8,10 @@ import { Specialist, BehavioralSettings } from '@/types/specialist';
 const Index = () => {
   const [selectedSpecialist, setSelectedSpecialist] = useState<Specialist | null>(null);
   const [behavioralSettings, setBehavioralSettings] = useState<BehavioralSettings>({
-    location: 'city',
-    approach: 'science',
-    experience: 'young',
-    continent: 'North America'
+    location: '',
+    approach: '',
+    experience: '',
+    continent: ''
   });
   const [chatHistory, setChatHistory] = useState<any[]>([]);
 
@@ -34,8 +34,14 @@ const Index = () => {
       <main className="flex-1 flex flex-col">
         <header className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-primary">PersonaBot</h1>
-            <p className="text-gray-600">AI Medical Consultation Platform</p>
+            <div className="flex items-center space-x-3">
+              <img 
+                src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
+                alt="PersonaBot" 
+                className="h-10 w-auto"
+              />
+              <h1 className="text-2xl font-bold text-primary">PersonaBot</h1>
+            </div>
           </div>
         </header>
 

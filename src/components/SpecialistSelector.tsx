@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
 
 const specialists: Specialist[] = [
@@ -74,25 +73,25 @@ export const SpecialistSelector = ({
             Choose Your Medical Specialist
           </h2>
           <p className="text-lg text-gray-600">
-            Select a specialist and customize their background to get personalized medical consultation
+            Select a specialist and customize their background
           </p>
         </div>
 
         {/* Behavioral Settings */}
         <Card className="mb-8 animate-fade-in">
           <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900">Specialist Persona Settings</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Specialist Persona Settings (Optional)</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="space-y-3">
                 <Label htmlFor="location" className="text-sm font-medium">Hospital Setting</Label>
                 <Select 
                   value={behavioralSettings.location} 
-                  onValueChange={(value: 'city' | 'rural') => 
+                  onValueChange={(value: 'city' | 'rural' | '') => 
                     setBehavioralSettings({...behavioralSettings, location: value})
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select setting" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="city">City Hospital</SelectItem>
@@ -105,12 +104,12 @@ export const SpecialistSelector = ({
                 <Label htmlFor="approach" className="text-sm font-medium">Medical Approach</Label>
                 <Select 
                   value={behavioralSettings.approach} 
-                  onValueChange={(value: 'science' | 'conservative') => 
+                  onValueChange={(value: 'science' | 'conservative' | '') => 
                     setBehavioralSettings({...behavioralSettings, approach: value})
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select approach" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="science">Evidence-Based</SelectItem>
@@ -123,12 +122,12 @@ export const SpecialistSelector = ({
                 <Label htmlFor="experience" className="text-sm font-medium">Experience Level</Label>
                 <Select 
                   value={behavioralSettings.experience} 
-                  onValueChange={(value: 'young' | 'old') => 
+                  onValueChange={(value: 'young' | 'old' | '') => 
                     setBehavioralSettings({...behavioralSettings, experience: value})
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select experience" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="young">Early Career</SelectItem>
@@ -146,7 +145,7 @@ export const SpecialistSelector = ({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select region" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="North America">North America</SelectItem>
@@ -171,31 +170,25 @@ export const SpecialistSelector = ({
               style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => onSpecialistSelect(specialist)}
             >
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
-                  <div className={`w-20 h-20 mx-auto rounded-full ${specialist.color} p-0.5`}>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className={`w-16 h-16 ${specialist.color} rounded-full p-0.5`}>
                     <img 
                       src={specialist.avatar} 
                       alt={specialist.fullName}
                       className="w-full h-full rounded-full object-cover"
                     />
                   </div>
-                  <div className={`absolute -bottom-2 -right-2 w-6 h-6 ${specialist.color} rounded-full flex items-center justify-center`}>
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                  
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      {specialist.fullName}
+                    </h3>
+                    <Badge variant="secondary" className="text-xs">
+                      {specialist.specialty}
+                    </Badge>
                   </div>
                 </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-1">
-                  {specialist.fullName}
-                </h3>
-                
-                <Badge variant="secondary" className="mb-3">
-                  {specialist.specialty}
-                </Badge>
-                
-                <p className="text-sm text-gray-600 mb-4">
-                  {specialist.description}
-                </p>
                 
                 <Button 
                   className="w-full"
