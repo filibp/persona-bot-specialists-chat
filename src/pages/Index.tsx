@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { SpecialistSelector } from '@/components/SpecialistSelector';
 import { ChatInterface } from '@/components/ChatInterface';
 import { ChatSidebar } from '@/components/ChatSidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
 
 const Index = () => {
@@ -24,44 +25,47 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex w-full">
-      <ChatSidebar 
-        chatHistory={chatHistory}
-        onNewChat={handleNewChat}
-        selectedSpecialist={selectedSpecialist}
-      />
-      
-      <main className="flex-1 flex flex-col">
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <img 
-                src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
-                alt="PersonaBot" 
-                className="h-10 w-auto"
-              />
-              <h1 className="text-2xl font-bold text-primary">PersonaBot</h1>
+    <SidebarProvider>
+      <div className="min-h-screen bg-gray-50 flex w-full">
+        <ChatSidebar 
+          chatHistory={chatHistory}
+          onNewChat={handleNewChat}
+          selectedSpecialist={selectedSpecialist}
+        />
+        
+        <main className="flex-1 flex flex-col">
+          <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <SidebarTrigger className="md:hidden" />
+                <img 
+                  src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
+                  alt="PersonaBot" 
+                  className="h-10 w-auto"
+                />
+                <h1 className="text-xl md:text-2xl font-bold text-primary">PersonaBot</h1>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        <div className="flex-1 flex">
-          {!selectedSpecialist ? (
-            <SpecialistSelector 
-              onSpecialistSelect={handleSpecialistSelect}
-              behavioralSettings={behavioralSettings}
-              setBehavioralSettings={setBehavioralSettings}
-            />
-          ) : (
-            <ChatInterface 
-              specialist={selectedSpecialist}
-              behavioralSettings={behavioralSettings}
-              onBack={() => setSelectedSpecialist(null)}
-            />
-          )}
-        </div>
-      </main>
-    </div>
+          <div className="flex-1 flex overflow-hidden">
+            {!selectedSpecialist ? (
+              <SpecialistSelector 
+                onSpecialistSelect={handleSpecialistSelect}
+                behavioralSettings={behavioralSettings}
+                setBehavioralSettings={setBehavioralSettings}
+              />
+            ) : (
+              <ChatInterface 
+                specialist={selectedSpecialist}
+                behavioralSettings={behavioralSettings}
+                onBack={() => setSelectedSpecialist(null)}
+              />
+            )}
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
