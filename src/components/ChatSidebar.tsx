@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Plus, MessageSquare, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, MessageSquare, ChevronDown, ChevronRight, Users } from 'lucide-react';
 import { Specialist } from '@/types/specialist';
 import { 
   Sidebar, 
@@ -20,10 +20,12 @@ import {
 interface ChatSidebarProps {
   chatHistory: any[];
   onNewChat: () => void;
-  selectedSpecialist: Specialist | null;
+  selectedSpecialists: Specialist[];
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: ChatSidebarProps) => {
+export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialists, isOpen, onToggle }: ChatSidebarProps) => {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['recent']));
 
   const toggleFolder = (folderId: string) => {
@@ -75,27 +77,31 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
   ];
 
   const sampleChats = [
-    { id: '1', title: 'Blood pressure concerns', specialist: 'cardio', date: 'Today' },
-    { id: '2', title: 'Annual checkup questions', specialist: 'pcp', date: 'Yesterday' },
-    { id: '3', title: 'Diabetes management', specialist: 'endo', date: '2 days ago' },
-    { id: '4', title: 'Medication interactions', specialist: 'pharm', date: '1 week ago' },
-    { id: '5', title: 'General health advice', specialist: 'pcp', date: '1 week ago' },
-    { id: '6', title: 'Thyroid levels discussion', specialist: 'endo', date: '2 weeks ago' }
+    { id: '1', title: 'Blood pressure concerns', specialists: ['cardio'], date: 'Today' },
+    { id: '2', title: 'Annual checkup questions', specialists: ['pcp'], date: 'Yesterday' },
+    { id: '3', title: 'Group consultation: Diabetes & Heart', specialists: ['endo', 'cardio'], date: '2 days ago' },
+    { id: '4', title: 'Medication interactions', specialists: ['pharm'], date: '1 week ago' },
+    { id: '5', title: 'Multi-specialist: Full health review', specialists: ['pcp', 'cardio', 'endo'], date: '1 week ago' },
+    { id: '6', title: 'Thyroid levels discussion', specialists: ['endo'], date: '2 weeks ago' }
   ];
 
-  return (
-    <Sidebar className="w-80">
-      <SidebarHeader className="p-4">
-        <Button 
-          onClick={onNewChat}
-          className="w-full bg-primary hover:bg-primary/90 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New Consultation
-        </Button>
-      </SidebarHeader>
+  if (!isOpen) {
+    return null;
+  }
 
-      <SidebarContent>
+  return (
+    <div className="fixed inset-y-0 left-0 z-50 w-80 bg-white border-r border-gray-200 shadow-lg transform transition-transform lg:relative lg:translate-x-0 lg:shadow-none">
+      <div className="flex flex-col h-full">
+        <div className="p-4">
+          <Button 
+            onClick={onNewChat}
+            className="w-full bg-primary hover:bg-primary/90 text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Consultation
+          </Button>
+        </div>
+
         <ScrollArea className="flex-1">
           <div className="p-4 space-y-4">
             {/* Recent Chats */}
@@ -127,10 +133,15 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
                         .map(chat => (
                           <SidebarMenuItem key={chat.id}>
                             <div className="ml-6 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
-                              <div className="text-sm font-medium text-gray-900 truncate">
-                                {chat.title}
+                              <div className="flex items-center space-x-2 mb-1">
+                                {chat.specialists.length > 1 && (
+                                  <Users className="w-3 h-3 text-gray-400" />
+                                )}
+                                <div className="text-sm font-medium text-gray-900 truncate">
+                                  {chat.title}
+                                </div>
                               </div>
-                              <div className="text-xs text-gray-500 mt-1">
+                              <div className="text-xs text-gray-500">
                                 {chat.date}
                               </div>
                             </div>
@@ -178,14 +189,19 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
                     {expandedFolders.has(specialist.id) && specialist.count > 0 && (
                       <>
                         {sampleChats
-                          .filter(chat => chat.specialist === specialist.id)
+                          .filter(chat => chat.specialists.includes(specialist.id))
                           .map(chat => (
                             <SidebarMenuItem key={chat.id}>
                               <div className="ml-8 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
-                                <div className="text-sm font-medium text-gray-900 truncate">
-                                  {chat.title}
+                                <div className="flex items-center space-x-2 mb-1">
+                                  {chat.specialists.length > 1 && (
+                                    <Users className="w-3 h-3 text-gray-400" />
+                                  )}
+                                  <div className="text-sm font-medium text-gray-900 truncate">
+                                    {chat.title}
+                                  </div>
                                 </div>
-                                <div className="text-xs text-gray-500 mt-1">
+                                <div className="text-xs text-gray-500">
                                   {chat.date}
                                 </div>
                               </div>
@@ -199,23 +215,41 @@ export const ChatSidebar = ({ chatHistory, onNewChat, selectedSpecialist }: Chat
             ))}
           </div>
         </ScrollArea>
-      </SidebarContent>
 
-      {selectedSpecialist && (
-        <SidebarFooter className="p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary-100 rounded-full flex-shrink-0"></div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-gray-900 truncate">
-                Currently with {selectedSpecialist.fullName}
-              </div>
-              <div className="text-xs text-gray-500">
-                {selectedSpecialist.specialty}
-              </div>
+        {selectedSpecialists.length > 0 && (
+          <div className="p-4 border-t">
+            <div className="flex items-center space-x-3">
+              {selectedSpecialists.length > 1 ? (
+                <>
+                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Users className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
+                      Group consultation ({selectedSpecialists.length} specialists)
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {selectedSpecialists.map(s => s.name).join(', ')}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-8 h-8 bg-primary-100 rounded-full flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
+                      Currently with {selectedSpecialists[0].fullName}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {selectedSpecialists[0].specialty}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </SidebarFooter>
-      )}
-    </Sidebar>
+        )}
+      </div>
+    </div>
   );
 };

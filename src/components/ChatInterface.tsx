@@ -4,20 +4,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Send, User } from 'lucide-react';
+import { ArrowLeft, Send, User, Users } from 'lucide-react';
 import { Specialist, BehavioralSettings, ChatMessage } from '@/types/specialist';
 
 interface ChatInterfaceProps {
-  specialist: Specialist;
+  specialists: Specialist[];
   behavioralSettings: BehavioralSettings;
   onBack: () => void;
 }
 
-export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatInterfaceProps) => {
+export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatInterfaceProps) => {
+  const isMultipleSpecialists = specialists.length > 1;
+  const primarySpecialist = specialists[0];
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      content: `Hello! I'm ${specialist.fullName}, your ${specialist.specialty.toLowerCase()}. I'm working at a ${behavioralSettings.location} hospital in ${behavioralSettings.continent}, and I take a ${behavioralSettings.approach}-based approach to medicine. As a ${behavioralSettings.experience} professional, I'm here to help with your health concerns. What brings you in today?`,
+      content: isMultipleSpecialists 
+        ? `Hello! We are your medical team: ${specialists.map(s => s.fullName).join(', ')}. We're working together at a ${behavioralSettings.location} hospital in ${behavioralSettings.continent}, and we take a ${behavioralSettings.approach}-based approach to medicine. As ${behavioralSettings.experience} professionals, we're here to provide you with comprehensive care by combining our expertise. What brings you in today?`
+        : `Hello! I'm ${primarySpecialist.fullName}, your ${primarySpecialist.specialty.toLowerCase()}. I'm working at a ${behavioralSettings.location} hospital in ${behavioralSettings.continent}, and I take a ${behavioralSettings.approach}-based approach to medicine. As a ${behavioralSettings.experience} professional, I'm here to help with your health concerns. What brings you in today?`,
       sender: 'specialist',
       timestamp: new Date()
     }
@@ -39,7 +44,12 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
 
     // Simulate specialist response
     setTimeout(() => {
-      const responses = [
+      const responses = isMultipleSpecialists ? [
+        "Thank you for sharing that information. As a team, we'd like to discuss this from multiple perspectives to give you the most comprehensive care.",
+        "That's a very good question. Let us combine our different areas of expertise to provide you with a thorough answer.",
+        "We understand your concerns. From our collective clinical experience, here's what we recommend...",
+        "Based on what you're describing, we're considering this from multiple specialist viewpoints to ensure we don't miss anything important."
+      ] : [
         "Thank you for sharing that information. Based on what you've described, I'd like to ask a few more questions to better understand your condition.",
         "That's a very good question. Let me explain this from my clinical experience and current medical guidelines.",
         "I understand your concerns. In my practice, I often see similar cases, and here's what I typically recommend...",
@@ -82,21 +92,40 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
             <ArrowLeft className="w-4 h-4" />
           </Button>
           
-          <div className={`w-10 h-10 ${specialist.color} rounded-full p-0.5 flex-shrink-0`}>
-            <img 
-              src={specialist.avatar} 
-              alt={specialist.fullName}
-              className="w-full h-full rounded-full object-cover"
-            />
-          </div>
+          {isMultipleSpecialists ? (
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-white" />
+            </div>
+          ) : (
+            <div className={`w-10 h-10 ${primarySpecialist.color} rounded-full p-0.5 flex-shrink-0`}>
+              <img 
+                src={primarySpecialist.avatar} 
+                alt={primarySpecialist.fullName}
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+          )}
           
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-semibold text-gray-900 truncate">
-              {specialist.fullName}
-            </h2>
-            <p className="text-sm text-gray-600 truncate">
-              {specialist.specialty}
-            </p>
+            {isMultipleSpecialists ? (
+              <>
+                <h2 className="text-lg font-semibold text-gray-900 truncate">
+                  Medical Team Consultation
+                </h2>
+                <p className="text-sm text-gray-600 truncate">
+                  {specialists.length} specialists: {specialists.map(s => s.name).join(', ')}
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-semibold text-gray-900 truncate">
+                  {primarySpecialist.fullName}
+                </h2>
+                <p className="text-sm text-gray-600 truncate">
+                  {primarySpecialist.specialty}
+                </p>
+              </>
+            )}
           </div>
           
           {activeSettings.length > 0 && (
@@ -120,6 +149,27 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
             ))}
           </div>
         )}
+
+        {/* Show individual specialists in multi-specialist mode */}
+        {isMultipleSpecialists && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {specialists.map((specialist) => (
+              <div key={specialist.id} className="flex items-center space-x-2 bg-gray-50 rounded-lg p-2">
+                <div className={`w-6 h-6 ${specialist.color} rounded-full p-0.5`}>
+                  <img 
+                    src={specialist.avatar} 
+                    alt={specialist.fullName}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+                <span className="text-sm font-medium text-gray-700">{specialist.name}</span>
+                <Badge variant="secondary" className="text-xs">
+                  {specialist.specialty}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Messages with inner scroll */}
@@ -135,14 +185,18 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                     message.sender === 'user' 
                       ? 'bg-primary text-white ml-2' 
-                      : `${specialist.color} mr-2`
+                      : isMultipleSpecialists 
+                        ? 'bg-primary mr-2'
+                        : `${primarySpecialist.color} mr-2`
                   }`}>
                     {message.sender === 'user' ? (
                       <User className="w-4 h-4" />
+                    ) : isMultipleSpecialists ? (
+                      <Users className="w-4 h-4 text-white" />
                     ) : (
                       <img 
-                        src={specialist.avatar} 
-                        alt={specialist.name}
+                        src={primarySpecialist.avatar} 
+                        alt={primarySpecialist.name}
                         className="w-full h-full rounded-full object-cover"
                       />
                     )}
@@ -175,7 +229,7 @@ export const ChatInterface = ({ specialist, behavioralSettings, onBack }: ChatIn
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={`Ask ${specialist.name} anything...`}
+              placeholder={isMultipleSpecialists ? "Ask the medical team anything..." : `Ask ${primarySpecialist.name} anything...`}
               className="flex-1"
             />
             <Button 

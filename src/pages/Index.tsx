@@ -5,10 +5,12 @@ import { ChatInterface } from '@/components/ChatInterface';
 import { ChatSidebar } from '@/components/ChatSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [selectedSpecialists, setSelectedSpecialists] = useState<Specialist[]>([]);
-  const [activeSpecialist, setActiveSpecialist] = useState<Specialist | null>(null);
+  const [activeSpecialists, setActiveSpecialists] = useState<Specialist[]>([]);
   const [behavioralSettings, setBehavioralSettings] = useState<BehavioralSettings>({
     location: '',
     approach: '',
@@ -16,6 +18,7 @@ const Index = () => {
     continent: ''
   });
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSpecialistToggle = (specialist: Specialist) => {
     setSelectedSpecialists(prev => {
@@ -30,13 +33,17 @@ const Index = () => {
 
   const handleStartConsultation = () => {
     if (selectedSpecialists.length > 0) {
-      setActiveSpecialist(selectedSpecialists[0]); // Start with first selected specialist
+      setActiveSpecialists(selectedSpecialists);
     }
   };
 
   const handleNewChat = () => {
-    setActiveSpecialist(null);
+    setActiveSpecialists([]);
     setSelectedSpecialists([]);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   return (
@@ -45,14 +52,23 @@ const Index = () => {
         <ChatSidebar 
           chatHistory={chatHistory}
           onNewChat={handleNewChat}
-          selectedSpecialist={activeSpecialist}
+          selectedSpecialists={activeSpecialists}
+          isOpen={sidebarOpen}
+          onToggle={toggleSidebar}
         />
         
         <div className="flex-1 flex flex-col min-w-0">
           <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <SidebarTrigger />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleSidebar}
+                  className="p-2"
+                >
+                  <Menu className="w-5 h-5" />
+                </Button>
                 <img 
                   src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
                   alt="PersonaBot" 
@@ -64,7 +80,7 @@ const Index = () => {
           </header>
 
           <div className="flex-1 flex flex-col min-h-0">
-            {!activeSpecialist ? (
+            {activeSpecialists.length === 0 ? (
               <SpecialistSelector 
                 selectedSpecialists={selectedSpecialists}
                 onSpecialistToggle={handleSpecialistToggle}
@@ -74,9 +90,9 @@ const Index = () => {
               />
             ) : (
               <ChatInterface 
-                specialist={activeSpecialist}
+                specialists={activeSpecialists}
                 behavioralSettings={behavioralSettings}
-                onBack={() => setActiveSpecialist(null)}
+                onBack={() => setActiveSpecialists([])}
               />
             )}
           </div>
