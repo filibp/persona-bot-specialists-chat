@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,7 +78,7 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
     .map(([key, value]) => ({ key, value }));
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex flex-col h-screen max-h-screen overflow-hidden">
       {/* Chat Header - Fixed */}
       <div className="bg-white border-b border-gray-200 p-4 flex-shrink-0">
         <div className="flex items-center space-x-4">
@@ -172,7 +171,7 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
         )}
       </div>
 
-      {/* Messages - Scrollable Area */}
+      {/* Messages - Scrollable Area with fixed height */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="p-4 space-y-4 max-w-4xl mx-auto">

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { SpecialistSelector } from '@/components/SpecialistSelector';
 import { ChatInterface } from '@/components/ChatInterface';
@@ -48,7 +47,7 @@ const Index = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 flex w-full">
+      <div className="h-screen bg-gray-50 flex w-full overflow-hidden">
         <ChatSidebar 
           chatHistory={chatHistory}
           onNewChat={handleNewChat}
@@ -57,7 +56,7 @@ const Index = () => {
           onToggle={toggleSidebar}
         />
         
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 h-full">
           <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -81,7 +80,7 @@ const Index = () => {
             </div>
           </header>
 
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 min-h-0 overflow-hidden">
             {activeSpecialists.length === 0 ? (
               <SpecialistSelector 
                 selectedSpecialists={selectedSpecialists}
