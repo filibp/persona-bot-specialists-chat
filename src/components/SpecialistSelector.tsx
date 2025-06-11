@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
+import { Check } from 'lucide-react';
 
 const specialists: Specialist[] = [
   {
@@ -55,16 +56,23 @@ const specialists: Specialist[] = [
 ];
 
 interface SpecialistSelectorProps {
-  onSpecialistSelect: (specialist: Specialist) => void;
+  selectedSpecialists: Specialist[];
+  onSpecialistToggle: (specialist: Specialist) => void;
+  onStartConsultation: () => void;
   behavioralSettings: BehavioralSettings;
   setBehavioralSettings: (settings: BehavioralSettings) => void;
 }
 
 export const SpecialistSelector = ({ 
-  onSpecialistSelect, 
+  selectedSpecialists,
+  onSpecialistToggle,
+  onStartConsultation,
   behavioralSettings, 
   setBehavioralSettings 
 }: SpecialistSelectorProps) => {
+  const isSelected = (specialist: Specialist) => 
+    selectedSpecialists.some(s => s.id === specialist.id);
+
   return (
     <div className="flex-1 p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto">
@@ -162,44 +170,57 @@ export const SpecialistSelector = ({
         </Card>
 
         {/* Specialists Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {specialists.map((specialist, index) => (
             <Card 
               key={specialist.id} 
-              className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in"
+              className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in ${
+                isSelected(specialist) ? 'ring-2 ring-primary bg-primary/5' : ''
+              }`}
               style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => onSpecialistSelect(specialist)}
+              onClick={() => onSpecialistToggle(specialist)}
             >
               <CardContent className="p-6">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className={`w-16 h-16 ${specialist.color} rounded-full p-0.5`}>
+                <div className="flex items-center space-x-4">
+                  <div className={`w-16 h-16 ${specialist.color} rounded-full p-0.5 relative`}>
                     <img 
                       src={specialist.avatar} 
                       alt={specialist.fullName}
                       className="w-full h-full rounded-full object-cover"
                     />
+                    {isSelected(specialist) && (
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
-                      {specialist.fullName}
+                      {specialist.name}
                     </h3>
                     <Badge variant="secondary" className="text-xs">
                       {specialist.specialty}
                     </Badge>
                   </div>
                 </div>
-                
-                <Button 
-                  className="w-full"
-                  style={{ backgroundColor: '#001965' }}
-                >
-                  Start Consultation
-                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {/* Start Consultation Button */}
+        {selectedSpecialists.length > 0 && (
+          <div className="flex justify-center">
+            <Button 
+              onClick={onStartConsultation}
+              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg"
+              size="lg"
+            >
+              Start Consultation with {selectedSpecialists.length} Specialist{selectedSpecialists.length > 1 ? 's' : ''}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

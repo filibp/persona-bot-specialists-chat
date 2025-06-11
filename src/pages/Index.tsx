@@ -7,7 +7,8 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
 
 const Index = () => {
-  const [selectedSpecialist, setSelectedSpecialist] = useState<Specialist | null>(null);
+  const [selectedSpecialists, setSelectedSpecialists] = useState<Specialist[]>([]);
+  const [activeSpecialist, setActiveSpecialist] = useState<Specialist | null>(null);
   const [behavioralSettings, setBehavioralSettings] = useState<BehavioralSettings>({
     location: '',
     approach: '',
@@ -16,12 +17,26 @@ const Index = () => {
   });
   const [chatHistory, setChatHistory] = useState<any[]>([]);
 
-  const handleSpecialistSelect = (specialist: Specialist) => {
-    setSelectedSpecialist(specialist);
+  const handleSpecialistToggle = (specialist: Specialist) => {
+    setSelectedSpecialists(prev => {
+      const isSelected = prev.some(s => s.id === specialist.id);
+      if (isSelected) {
+        return prev.filter(s => s.id !== specialist.id);
+      } else {
+        return [...prev, specialist];
+      }
+    });
+  };
+
+  const handleStartConsultation = () => {
+    if (selectedSpecialists.length > 0) {
+      setActiveSpecialist(selectedSpecialists[0]); // Start with first selected specialist
+    }
   };
 
   const handleNewChat = () => {
-    setSelectedSpecialist(null);
+    setActiveSpecialist(null);
+    setSelectedSpecialists([]);
   };
 
   return (
@@ -30,7 +45,7 @@ const Index = () => {
         <ChatSidebar 
           chatHistory={chatHistory}
           onNewChat={handleNewChat}
-          selectedSpecialist={selectedSpecialist}
+          selectedSpecialist={activeSpecialist}
         />
         
         <div className="flex-1 flex flex-col min-w-0">
@@ -49,17 +64,19 @@ const Index = () => {
           </header>
 
           <div className="flex-1 flex flex-col min-h-0">
-            {!selectedSpecialist ? (
+            {!activeSpecialist ? (
               <SpecialistSelector 
-                onSpecialistSelect={handleSpecialistSelect}
+                selectedSpecialists={selectedSpecialists}
+                onSpecialistToggle={handleSpecialistToggle}
+                onStartConsultation={handleStartConsultation}
                 behavioralSettings={behavioralSettings}
                 setBehavioralSettings={setBehavioralSettings}
               />
             ) : (
               <ChatInterface 
-                specialist={selectedSpecialist}
+                specialist={activeSpecialist}
                 behavioralSettings={behavioralSettings}
-                onBack={() => setSelectedSpecialist(null)}
+                onBack={() => setActiveSpecialist(null)}
               />
             )}
           </div>
