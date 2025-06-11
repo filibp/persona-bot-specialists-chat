@@ -80,7 +80,7 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      {/* Chat Header */}
+      {/* Chat Header - Fixed */}
       <div className="bg-white border-b border-gray-200 p-4 flex-shrink-0">
         <div className="flex items-center space-x-4">
           <Button 
@@ -172,10 +172,10 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
         )}
       </div>
 
-      {/* Messages with inner scroll */}
-      <div className="flex-1 min-h-0 flex flex-col">
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4 max-w-4xl mx-auto">
+      {/* Messages - Scrollable Area */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="p-4 space-y-4 max-w-4xl mx-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -221,7 +221,7 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
         </ScrollArea>
       </div>
 
-      {/* Message Input - Always visible at bottom */}
+      {/* Message Input - Fixed at Bottom */}
       <div className="bg-white border-t border-gray-200 p-4 flex-shrink-0">
         <div className="max-w-4xl mx-auto">
           <div className="flex space-x-2">

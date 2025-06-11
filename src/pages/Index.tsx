@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { SpecialistSelector } from '@/components/SpecialistSelector';
 import { ChatInterface } from '@/components/ChatInterface';
 import { ChatSidebar } from '@/components/ChatSidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -61,14 +61,16 @@ const Index = () => {
           <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleSidebar}
-                  className="p-2"
-                >
-                  <Menu className="w-5 h-5" />
-                </Button>
+                {!sidebarOpen && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={toggleSidebar}
+                    className="p-2"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                )}
                 <img 
                   src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png" 
                   alt="PersonaBot" 
