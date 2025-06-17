@@ -174,13 +174,13 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
       {/* Messages - Scrollable Area that takes remaining space */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="p-4 space-y-4 max-w-4xl mx-auto">
+          <div className="p-4 space-y-4 max-w-5xl mx-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
               >
-                <div className={`flex max-w-[85%] md:max-w-[70%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} space-x-2`}>
+                <div className={`flex max-w-[85%] md:max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} space-x-2`}>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                     message.sender === 'user' 
                       ? 'bg-primary text-white ml-2' 
@@ -222,7 +222,7 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
 
       {/* Message Input - Fixed at Bottom */}
       <div className="bg-white border-t border-gray-200 p-4 flex-shrink-0">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="flex space-x-2">
             <Input
               value={inputMessage}
@@ -239,9 +239,6 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
               <Send className="w-4 h-4" />
             </Button>
           </div>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            PersonaBot AI provides general information and should not replace professional medical advice.
-          </p>
         </div>
       </div>
     </div>
