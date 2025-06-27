@@ -28,6 +28,13 @@ export const SpecialistSelector = ({
   const isSelected = (specialist: Specialist) => 
     selectedSpecialists.some(s => s.id === specialist.id);
 
+  const handleSettingChange = (settingId: string, value: string) => {
+    setBehavioralSettings({
+      ...behavioralSettings,
+      [settingId]: value
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -68,89 +75,26 @@ export const SpecialistSelector = ({
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4 text-gray-900">Specialist Persona Settings (Optional)</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="space-y-3">
-                  <Label htmlFor="location" className="text-sm font-medium">Hospital Setting</Label>
-                  <Select 
-                    value={behavioralSettings.location} 
-                    onValueChange={(value: 'city' | 'rural' | '') => 
-                      setBehavioralSettings({...behavioralSettings, location: value})
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select setting" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {settingsConfig.location.map((option) => (
-                        <SelectItem key={option.id} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="approach" className="text-sm font-medium">Medical Approach</Label>
-                  <Select 
-                    value={behavioralSettings.approach} 
-                    onValueChange={(value: 'science' | 'conservative' | '') => 
-                      setBehavioralSettings({...behavioralSettings, approach: value})
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select approach" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {settingsConfig.approach.map((option) => (
-                        <SelectItem key={option.id} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="experience" className="text-sm font-medium">Experience Level</Label>
-                  <Select 
-                    value={behavioralSettings.experience} 
-                    onValueChange={(value: 'young' | 'old' | '') => 
-                      setBehavioralSettings({...behavioralSettings, experience: value})
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select experience" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {settingsConfig.experience.map((option) => (
-                        <SelectItem key={option.id} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="continent" className="text-sm font-medium">Geographic Region</Label>
-                  <Select 
-                    value={behavioralSettings.continent} 
-                    onValueChange={(value) => 
-                      setBehavioralSettings({...behavioralSettings, continent: value as any})
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select region" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {settingsConfig.continent.map((option) => (
-                        <SelectItem key={option.id} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {settingsConfig.behavioralSettings.map((setting) => (
+                  <div key={setting.id} className="space-y-3">
+                    <Label htmlFor={setting.id} className="text-sm font-medium">{setting.category}</Label>
+                    <Select 
+                      value={behavioralSettings[setting.id] || ''} 
+                      onValueChange={(value) => handleSettingChange(setting.id, value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={`Select ${setting.category.toLowerCase()}`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {setting.values.map((value) => (
+                          <SelectItem key={value} value={value}>
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

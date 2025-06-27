@@ -10,10 +10,7 @@ export interface Specialist {
 }
 
 export interface BehavioralSettings {
-  location: 'city' | 'rural' | '';
-  approach: 'science' | 'conservative' | '';
-  experience: 'young' | 'old' | '';
-  continent: 'North America' | 'Europe' | 'Asia' | 'South America' | 'Africa' | 'Australia' | '';
+  [key: string]: string;
 }
 
 export interface ChatMessage {

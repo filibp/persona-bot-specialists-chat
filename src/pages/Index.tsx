@@ -13,12 +13,7 @@ const Index = () => {
   );
   const [activeSpecialists, setActiveSpecialists] = useState<Specialist[]>([]);
   const [behavioralSettings, setBehavioralSettings] =
-    useState<BehavioralSettings>({
-      location: "",
-      approach: "",
-      experience: "",
-      continent: "",
-    });
+    useState<BehavioralSettings>({});
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
