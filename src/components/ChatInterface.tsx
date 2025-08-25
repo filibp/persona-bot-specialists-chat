@@ -74,8 +74,16 @@ export const ChatInterface = ({ specialists, behavioralSettings, onBack }: ChatI
 
   // Filter out empty behavioral settings for display
   const activeSettings = Object.entries(behavioralSettings)
-    .filter(([_, value]) => value && value.trim() !== '')
-    .map(([key, value]) => ({ key, value }));
+    .filter(([_, value]) => {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      return value && typeof value === 'string' && value.trim() !== '';
+    })
+    .map(([key, value]) => ({ 
+      key, 
+      value: Array.isArray(value) ? value.join(', ') : value 
+    }));
 
   return (
     <div className="flex flex-col h-full max-h-full overflow-hidden">

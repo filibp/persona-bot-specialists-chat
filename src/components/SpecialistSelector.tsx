@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { Specialist, BehavioralSettings } from '@/types/specialist';
 import { Check, Loader2 } from 'lucide-react';
 import { useSpecialists } from '@/hooks/useSpecialists';
@@ -28,7 +29,7 @@ export const SpecialistSelector = ({
   const isSelected = (specialist: Specialist) => 
     selectedSpecialists.some(s => s.id === specialist.id);
 
-  const handleSettingChange = (settingId: string, value: string) => {
+  const handleSettingChange = (settingId: string, value: string | string[]) => {
     setBehavioralSettings({
       ...behavioralSettings,
       [settingId]: value
@@ -78,21 +79,30 @@ export const SpecialistSelector = ({
                 {settingsConfig.behavioralSettings.map((setting) => (
                   <div key={setting.id} className="space-y-3">
                     <Label htmlFor={setting.id} className="text-sm font-medium">{setting.category}</Label>
-                    <Select 
-                      value={behavioralSettings[setting.id] || ''} 
-                      onValueChange={(value) => handleSettingChange(setting.id, value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={`Select ${setting.category.toLowerCase()}`} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {setting.values.map((value) => (
-                          <SelectItem key={value} value={value}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {setting.id === 'continent' ? (
+                      <MultiSelect
+                        options={setting.values}
+                        selected={Array.isArray(behavioralSettings[setting.id]) ? behavioralSettings[setting.id] as string[] : []}
+                        onChange={(value) => handleSettingChange(setting.id, value)}
+                        placeholder={`Select ${setting.category.toLowerCase()}`}
+                      />
+                    ) : (
+                      <Select 
+                        value={typeof behavioralSettings[setting.id] === 'string' ? behavioralSettings[setting.id] as string : ''} 
+                        onValueChange={(value) => handleSettingChange(setting.id, value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={`Select ${setting.category.toLowerCase()}`} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {setting.values.map((value) => (
+                            <SelectItem key={value} value={value}>
+                              {value}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                 ))}
               </div>

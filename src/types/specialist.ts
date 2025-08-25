@@ -10,7 +10,7 @@ export interface Specialist {
 }
 
 export interface BehavioralSettings {
-  [key: string]: string;
+  [key: string]: string | string[];
 }
 
 export interface ChatMessage {
