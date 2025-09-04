@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SpecialistSelector } from "@/components/SpecialistSelector";
 import { ChatInterface } from "@/components/ChatInterface";
 import { ChatSidebar } from "@/components/ChatSidebar";
-import { TutorialDialog } from "@/components/TutorialDialog";
+import { TutorialOverlay } from "@/components/TutorialDialog";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Specialist, BehavioralSettings } from "@/types/specialist";
 import { Menu } from "lucide-react";
@@ -74,7 +74,7 @@ const Index = () => {
                 </h1>
               </div>
               <div className="flex items-center space-x-3">
-                <TutorialDialog />
+                <TutorialOverlay />
                 <img
                   src="/lovable-uploads/6ec2a542-1e91-4ba2-8337-687e93f3031b.png"
                   alt="PersonaBot"
