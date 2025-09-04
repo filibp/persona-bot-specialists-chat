@@ -1,148 +1,87 @@
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { HelpCircle, Users, Settings, MessageSquare, ArrowRight } from "lucide-react";
 
-interface TutorialStep {
-  id: string;
-  title: string;
-  description: string;
-  position: {
-    top?: string;
-    left?: string;
-    right?: string;
-    bottom?: string;
-    transform?: string;
-  };
-  arrowDirection: 'up' | 'down' | 'left' | 'right';
-}
+export const TutorialDialog = () => {
+  const [open, setOpen] = useState(false);
 
-const tutorialSteps: TutorialStep[] = [
-  {
-    id: "specialists",
-    title: "Choose Your Specialists",
-    description: "Select from our expert specialists based on your needs. You can pick multiple specialists for diverse perspectives!",
-    position: { top: "20%", left: "10%" },
-    arrowDirection: "right"
-  },
-  {
-    id: "settings",
-    title: "Customize Settings",
-    description: "Adjust conversation style, language, and region to match your preferences.",
-    position: { top: "20%", right: "10%" },
-    arrowDirection: "left"
-  },
-  {
-    id: "start-button",
-    title: "Start Your Consultation",
-    description: "Click here once you've selected specialists and configured your settings.",
-    position: { bottom: "25%", left: "50%", transform: "translateX(-50%)" },
-    arrowDirection: "up"
-  }
-];
-
-const ConversationCloud = ({ 
-  step, 
-  onClose 
-}: { 
-  step: TutorialStep; 
-  onClose: () => void; 
-}) => {
-  const arrowClasses = {
-    up: "absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-background",
-    down: "absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-background",
-    left: "absolute -right-2 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-l-[8px] border-t-transparent border-b-transparent border-l-background",
-    right: "absolute -left-2 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-background"
-  };
-
-  return (
-    <div 
-      className="absolute z-50 animate-fade-in"
-      style={step.position}
-    >
-      <div className="relative bg-background border border-border rounded-lg p-4 shadow-lg max-w-xs">
-        <div className={arrowClasses[step.arrowDirection]} />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="absolute -top-1 -right-1 h-6 w-6 p-0 rounded-full"
-          onClick={onClose}
-        >
-          <X className="h-3 w-3" />
-        </Button>
-        <h4 className="font-semibold text-sm mb-1 text-foreground pr-6">
-          {step.title}
-        </h4>
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          {step.description}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-export const TutorialOverlay = () => {
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [visibleSteps, setVisibleSteps] = useState<string[]>([]);
-
-  const startTutorial = () => {
-    setShowTutorial(true);
-    setVisibleSteps(tutorialSteps.map(step => step.id));
-  };
-
-  const closeTutorial = () => {
-    setShowTutorial(false);
-    setVisibleSteps([]);
-  };
-
-  const closeStep = (stepId: string) => {
-    setVisibleSteps(prev => prev.filter(id => id !== stepId));
-    if (visibleSteps.length === 1) {
-      setShowTutorial(false);
+  const tutorialSteps = [
+    {
+      icon: <Users className="w-6 h-6 text-primary" />,
+      title: "Select Your Specialists",
+      description: "Choose from our expert specialists based on your needs. You can select multiple specialists to get diverse perspectives on your questions."
+    },
+    {
+      icon: <Settings className="w-6 h-6 text-primary" />,
+      title: "Configure Settings",
+      description: "Customize the conversation style, language, geographic region, and other behavioral settings to match your preferences."
+    },
+    {
+      icon: <ArrowRight className="w-6 h-6 text-primary" />,
+      title: "Start Consultation",
+      description: "Click 'Start Consultation' to begin your conversation with the selected specialists."
+    },
+    {
+      icon: <MessageSquare className="w-6 h-6 text-primary" />,
+      title: "Chat with Experts",
+      description: "Ask questions and get expert advice. Each specialist will provide their unique perspective based on their expertise."
     }
-  };
+  ];
 
   return (
-    <>
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="gap-2"
-        onClick={startTutorial}
-      >
-        <HelpCircle className="w-4 h-4" />
-        Tutorial
-      </Button>
-
-      {showTutorial && (
-        <>
-          {/* Overlay backdrop */}
-          <div className="fixed inset-0 bg-black/20 z-40 animate-fade-in" />
-          
-          {/* Tutorial clouds */}
-          {tutorialSteps.map((step) => 
-            visibleSteps.includes(step.id) && (
-              <ConversationCloud
-                key={step.id}
-                step={step}
-                onClose={() => closeStep(step.id)}
-              />
-            )
-          )}
-
-          {/* Close all button */}
-          <div className="fixed bottom-4 right-4 z-50">
-            <Button 
-              variant="secondary" 
-              size="sm"
-              onClick={closeTutorial}
-              className="shadow-lg"
-            >
-              Close Tutorial
-            </Button>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <HelpCircle className="w-4 h-4" />
+          Tutorial
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <HelpCircle className="w-5 h-5 text-primary" />
+            How PersonaBot Works
+          </DialogTitle>
+          <DialogDescription>
+            Learn how to get the most out of your consultation with our AI specialists
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-6 mt-4">
+          {tutorialSteps.map((step, index) => (
+            <div key={index} className="flex gap-4 p-4 rounded-lg bg-muted/30 border">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                {step.icon}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="text-xs px-2 py-1">
+                    Step {index + 1}
+                  </Badge>
+                  <h3 className="font-semibold text-foreground">{step.title}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            </div>
+          ))}
+          <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
+            <h4 className="font-semibold text-primary mb-2">💡 Pro Tip</h4>
+            <p className="text-sm text-muted-foreground">
+              For best results, be specific with your questions and don't hesitate to ask follow-up questions. Each specialist brings unique expertise to help you get comprehensive answers.
+            </p>
           </div>
-        </>
-      )}
-    </>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
